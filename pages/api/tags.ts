@@ -1,19 +1,15 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
+import { tags } from '@prisma/client';
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { getTags } from '../../prisma/tags';
 
-
-type TagsResponse = {
-  tags:[string]
-}
-
 export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse<TagsResponse>
+  res: NextApiResponse<tags>
 ) {
   switch (req.method) {
     case 'GET': {
-      const tagsResponse = {tags:await getTags()};
+      const tagsResponse = await getTags();
       return res.status(200).json(tagsResponse);
     }
   }

@@ -13,5 +13,5 @@ datasource db {
 
 model tags {
   id  String  @id @default(auto()) @map("_id") @db.ObjectId
-  tag String
+  tags String[]
 }

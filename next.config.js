@@ -2,6 +2,9 @@
 const nextConfig = {
   reactStrictMode: true,
   swcMinify: true,
+  serverRuntimeConfig: {
+    secret: 'CONDUIT'
+  }
 }
 
 module.exports = nextConfig

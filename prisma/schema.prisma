@@ -10,8 +10,18 @@ datasource db {
   url      = env("MONGODB_URI")
 }
 
-
-model tags {
-  id  String  @id @default(auto()) @map("_id") @db.ObjectId
+model Tags {
+  id   String   @id @default(auto()) @map("_id") @db.ObjectId
   tags String[]
+}
+
+model User {
+  id        String    @id @default(auto()) @map("_id") @db.ObjectId
+  bio       String
+  username  String    @unique
+  email     String    @unique
+  token     String
+  image     String
+  following String[]
+  password  String
 }

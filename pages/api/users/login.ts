@@ -3,8 +3,8 @@ import { NextApiRequest, NextApiResponse } from 'next';
 import getConfig from 'next/config';
 import { getUser, updateUser } from '../../../db/user';
 import { apiHandler } from '../../../helpers/api-handler';
+import { getResponse } from '../../../helpers/type-helpers';
 import { UserRequest, UserPayload, UserResponse } from '../../../types';
-import { getResponse } from '../../../constants';
 
 export default apiHandler(handler);
 

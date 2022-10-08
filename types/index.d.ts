@@ -1,21 +1,32 @@
 import { Prisma, Tags, User, Article, Comment } from '@prisma/client';
 import { articleWithComments, loginRequest, profilePayload, tagsResponse, userRequest, userPayload } from '../constants';
 
-type Errors = { body:string[]}
 
-export type ErrorResponse = { errors: Errors }
+type NonEmptyArray<T> = [T, ...T[]];
+type Errors = { body:NonEmptyArray<Error>}
 
-export type Tags=Tags;
+const okay: NonEmptyArray<number> = [1, 2];
 
-export type TagsResponse = Prisma.TagsGetPayload<typeof tagsResponse>;
+type ErrorResponse = { errors: Errors }
 
-export type User=User;
+type Tags=Tags;
 
-export type LoginRequest = Prisma.UserGetPayload<typeof loginRequest>
+type TagsResponse = Prisma.TagsGetPayload<typeof tagsResponse>;
 
-export type UserRequest = Prisma.UserGetPayload<typeof userRequest>
+type User=User;
 
-export type UserPayload = Prisma.UserGetPayload<typeof userPayload>
-export type UserResponse = { user:UserPayload }
-export type ProfilePayload = Prisma.UserGetPayload<typeof profilePayload>
-export type ProfileResponse = { profile:profile }
+type LoginRequest = Prisma.UserGetPayload<typeof loginRequest>
+
+type UserRequest = Prisma.UserGetPayload<typeof userRequest>
+type UserPayload = Prisma.UserGetPayload<typeof userPayload>
+type UserResponse = { user:UserPayload }
+
+type ProfilePayload = Prisma.UserGetPayload<typeof profilePayload>
+type ProfileResponse = { profile:profile }
+type WithUserFollowing<T> = T & {
+  following: boolean,
+  followedByIDs:never
+}
+type FollowedByIDs = {
+  followedByIDs: string[];
+}

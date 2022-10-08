@@ -4,8 +4,9 @@ import { addUser } from '../../../db/user';
 import { apiHandler } from '../../../helpers/api-handler';
 import { getUser } from '../../../db/user';
 import { UserRequest, UserPayload, UserResponse } from '../../../types/index';
-import { USER_DEFAULT, getResponse } from '../../../constants';
+import { USER_DEFAULT } from '../../../constants';
 import { Prisma } from '@prisma/client';
+import { getResponse } from '../../../helpers/type-helpers';
 
 export default apiHandler(handler);
 

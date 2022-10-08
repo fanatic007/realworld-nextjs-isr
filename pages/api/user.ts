@@ -3,7 +3,8 @@ import { UserPayload, UserResponse } from '../../types';
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { getUser, updateUser } from '../../db/user';
 import { apiHandler } from '../../helpers/api-handler';
-import { userResponseFields, getResponse } from '../../constants';
+import { userResponseFields } from '../../constants';
+import { getResponse } from '../../helpers/type-helpers';
 
 export default apiHandler(handler);
 

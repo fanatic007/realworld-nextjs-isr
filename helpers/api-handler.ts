@@ -1,8 +1,8 @@
 import { errorHandler } from './error-handler';
 import { jwtMiddleware } from './jwt-middleware';
 import type { NextApiRequest, NextApiResponse } from 'next';
-import { UserResponse } from '../types';
-export { apiHandler, filterObectByType };
+import { UserPayload } from '../types';
+export { apiHandler };
 
 function apiHandler(handler: Function) {
   return async (
@@ -16,10 +16,4 @@ function apiHandler(handler: Function) {
         errorHandler(<Error>err, res);
       }
     }
-}
-
-function filterObectByType<T>(obj:any){
-  return Object.keys(obj).
-  filter((key) =>  obj[key as keyof UserResponse]).
-  reduce((cur, key) => { return Object.assign(cur, { [key]: obj[key] })}, {});
 }

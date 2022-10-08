@@ -1,9 +1,10 @@
 const jwt = require('jsonwebtoken');
 import { NextApiRequest, NextApiResponse } from 'next';
 import getConfig from 'next/config';
-import { getUser, updateUser } from '../../../prisma/user';
-import { apiHandler, filterObectByType } from '../../../helpers/api-handler';
-import { User, UserRequest, UserResponse } from '../../../types';
+import { getUser, updateUser } from '../../../db/user';
+import { apiHandler } from '../../../helpers/api-handler';
+import { UserRequest, UserPayload, UserResponse } from '../../../types';
+import { getResponse } from '../../../constants';
 
 export default apiHandler(handler);
 
@@ -20,10 +21,11 @@ async function  handler(
     }
 
     async function authenticate({email}: UserRequest) {
-      let user: User = await getUser({email});
+      const user= await getUser({email},{id:true});
       if (!user) throw 'Username or password is incorrect';
-      const token = jwt.sign({ sub: user.id }, serverRuntimeConfig.secret, { expiresIn: '60s' });    
-      user = await updateUser({ id: user.id },{token:token});
-      const userResponse = filterObectByType<UserResponse>(user) as UserResponse;
-      return res.status(200).json(userResponse);     }
+      const token = jwt.sign({ sub: user.id }, serverRuntimeConfig.secret, { expiresIn: '60s' });
+      const updatedUser: UserPayload = await updateUser({ id: user.id },{token:token});
+      const userResponse = getResponse<UserResponse>(updatedUser,'user') as UserResponse;
+      return res.status(200).json(userResponse);
+    }
 }

@@ -1,10 +1,10 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type { NextApiRequest, NextApiResponse } from 'next';
-import { addUser } from '../../../prisma/user';
+import { addUser } from '../../../db/user';
 import { apiHandler } from '../../../helpers/api-handler';
-import { getUser } from '../../../prisma/user';
-import { UserRequest, UserResponse } from '../../../types';
-import { USER_DEFAULT } from '../../../constants';
+import { getUser } from '../../../db/user';
+import { UserRequest, UserPayload, UserResponse } from '../../../types/index';
+import { USER_DEFAULT, getResponse } from '../../../constants';
 import { Prisma } from '@prisma/client';
 
 export default apiHandler(handler);
@@ -19,8 +19,9 @@ async function handler (
       if(await getUser({email:regData.email}))
         throw new Error("User already exists");      
       const newUserData: Prisma.UserCreateInput  = {...regData, ...USER_DEFAULT} as Prisma.UserCreateInput;
-      const newUser: UserResponse = (await addUser(newUserData)) as UserResponse;
-      return res.status(200).json(newUser);
+      const newUser: UserPayload = (await addUser(newUserData)) as UserPayload;
+      const userResponse = getResponse<UserResponse>(newUser,'user') as UserResponse;
+      return res.status(200).json(userResponse);
     }
     default: {
       throw new Error("Method Not Allowed")

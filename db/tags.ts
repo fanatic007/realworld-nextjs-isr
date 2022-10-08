@@ -1,12 +1,15 @@
-import {Tags} from "../types";
+import { TagsResponse} from "../types";
 import { PrismaClient } from '@prisma/client'
-import { TAGS_ID } from "../constants";
+import { tagsResponseFields } from "../constants";
 
 const prisma = new PrismaClient();
 // READ
 export const getTags = async () => {
-  const [tags]: Tags[] = await prisma.tags.findMany();
-  !tags && initTags();
+  let [tags]: TagsResponse[] = await prisma.tags.findMany({
+    select: tagsResponseFields
+  });
+  if(!tags)
+    tags= await initTags();
   return tags;
 }
 //UPSERT
@@ -19,14 +22,16 @@ export const addTag = async (newTag:string) => {
       tags: {
         set: [...currentTags.tags, newTag],
       },
-    }
-  }) as Tags;
+    },
+    select: tagsResponseFields
+  });
 }
 
 async function initTags(){
-  await prisma.tags.create({
+  return await prisma.tags.create({
     data: {
       tags: [],
-    }
+    },
+    select: tagsResponseFields
   })
 }

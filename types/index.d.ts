@@ -1,22 +1,21 @@
-import { User, Tags } from "@prisma/client";
+import { Prisma, Tags, User, Article, Comment } from '@prisma/client';
+import { articleWithComments, loginRequest, profilePayload, tagsResponse, userRequest, userPayload } from '../constants';
 
-type MappedType<Type> = {
-  // For every existing property inside the type of Type
-  // convert it to be a ?: version
-  [Property in keyof Type]?: Type[Property];
-};
-
-type Errors = {
-  body:[Partial<Error>]
-}
+type Errors = { body:string[]}
 
 export type ErrorResponse = { errors: Errors }
 
-export type Tags = Tags;
-export type TagsResponse = MappedType<Tags> & { tags:string[] };
+export type Tags=Tags;
 
-export type User = User;
-export type UserResponse = MappedType<User> & { email,username,password,bio,following:string };
-export type UserRequest = MappedType<User> & { email,username,password:string };
-export type ProfileResponse = MappedType<User> & { username,image,bio,following:string };
+export type TagsResponse = Prisma.TagsGetPayload<typeof tagsResponse>;
 
+export type User=User;
+
+export type LoginRequest = Prisma.UserGetPayload<typeof loginRequest>
+
+export type UserRequest = Prisma.UserGetPayload<typeof userRequest>
+
+export type UserPayload = Prisma.UserGetPayload<typeof userPayload>
+export type UserResponse = { user:UserPayload }
+export type ProfilePayload = Prisma.UserGetPayload<typeof profilePayload>
+export type ProfileResponse = { profile:profile }

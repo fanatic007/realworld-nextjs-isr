@@ -2,7 +2,6 @@
   "name": "realworld-nextjs-isr",
   "version": "0.1.0",
   "private": true,
-  "typings": "types/index.d.ts",
   "scripts": {
     "dev": "next dev",
     "build": "next build",

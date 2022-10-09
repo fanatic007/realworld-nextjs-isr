@@ -1,7 +1,6 @@
+import type { NextApiRequest, NextApiResponse } from 'next';
 import { errorHandler } from './error-handler';
 import { jwtMiddleware } from './jwt-middleware';
-import type { NextApiRequest, NextApiResponse } from 'next';
-import { UserPayload } from '../types';
 export { apiHandler };
 
 function apiHandler(handler: Function) {

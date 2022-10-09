@@ -7,6 +7,7 @@ import { UserRequest, UserPayload, UserResponse } from '../../../types/index';
 import { USER_DEFAULT } from '../../../constants';
 import { Prisma } from '@prisma/client';
 import { getResponse } from '../../../helpers/type-helpers';
+import { generateToken } from '../../../helpers/jwt-middleware';
 
 export default apiHandler(handler);
 
@@ -17,7 +18,7 @@ async function handler (
   switch (req.method) {
     case 'POST': {
       const regData: UserRequest = req.body.user;
-      if(await getUser({email:regData.email}))
+      if(await getUser({username:regData.username}))
         throw new Error("User already exists");      
       const newUserData: Prisma.UserCreateInput  = {...regData, ...USER_DEFAULT} as Prisma.UserCreateInput;
       const newUser: UserPayload = (await addUser(newUserData)) as UserPayload;

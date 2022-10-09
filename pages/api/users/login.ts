@@ -1,10 +1,11 @@
-const jwt = require('jsonwebtoken');
+
 import { NextApiRequest, NextApiResponse } from 'next';
 import getConfig from 'next/config';
 import { getUser, updateUser } from '../../../db/user';
 import { apiHandler } from '../../../helpers/api-handler';
+import { generateToken } from '../../../helpers/jwt-middleware';
 import { getResponse } from '../../../helpers/type-helpers';
-import { UserRequest, UserPayload, UserResponse } from '../../../types';
+import { UserPayload, UserRequest, UserResponse } from '../../../types';
 
 export default apiHandler(handler);
 
@@ -21,9 +22,10 @@ async function  handler(
     }
 
     async function authenticate({email}: UserRequest) {
-      const user= await getUser({email},{id:true});
-      if (!user) throw 'Username or password is incorrect';
-      const token = jwt.sign({ sub: user.id }, serverRuntimeConfig.secret, { expiresIn: '60s' });
+      const user= await getUser({email},{id:true,username:true});
+      if (!user) 
+        throw 'Username or password is incorrect';
+      const token = generateToken(user.username);
       const updatedUser: UserPayload = await updateUser({ id: user.id },{token:token});
       const userResponse = getResponse<UserResponse>(updatedUser,'user') as UserResponse;
       return res.status(200).json(userResponse);

@@ -13,7 +13,7 @@ export const loginRequestFields = { email:true, password:true };
 export const userGetRequestFields = { email:true,username:true,password:true };
 export const userUpdateRequestFields = { email:true, username:true ,password:true ,bio:true, image:true };
 export const userResponseFields= { email:true,username:true,image:true, bio:true, token:true };
-export const profileResponseFields = { username:true ,image:true ,bio:true, followedByIDs:true };
+export const profileResponseFields = { username:true ,image:true ,bio:true };
 
 export const tagsResponse = Prisma.validator<Prisma.TagsArgs>()({ select: tagsResponseFields});
 export const loginRequest = Prisma.validator<Prisma.UserArgs>()({ select: loginRequestFields });

@@ -24,8 +24,7 @@ type UserResponse = { user:UserPayload }
 type ProfilePayload = Prisma.UserGetPayload<typeof profilePayload>
 type ProfileResponse = { profile:profile }
 type WithUserFollowing<T> = T & {
-  following: boolean,
-  followedByIDs:never
+  following: boolean
 }
 type FollowedByIDs = {
   followedByIDs: string[];

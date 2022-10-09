@@ -20,7 +20,7 @@ model User {
   bio           String    
   username      String    @unique
   email         String    @unique
-  token         String    @unique
+  token         String    
   image         String
   followedBy    User[]    @relation("UserFollows", fields: [followedByIDs], references: [id])
   followedByIDs String[]  @db.ObjectId

@@ -1,5 +1,5 @@
 import { Prisma, Tags, User, Article, Comment } from '@prisma/client';
-import { articleWithComments, loginRequest, profilePayload, tagsResponse, userRequest, userPayload } from '../constants';
+import { articleWithComments, loginRequest, profilePayload, tagsResponse, userRequest, userPayload, articleRequest } from '../constants';
 
 
 type NonEmptyArray<T> = [T, ...T[]];
@@ -29,3 +29,5 @@ type WithUserFollowing<T> = T & {
 type FollowedByIDs = {
   followedByIDs: string[];
 }
+
+type ArticleRequest = Prisma.ArticleGetPayload<typeof articleRequest>;

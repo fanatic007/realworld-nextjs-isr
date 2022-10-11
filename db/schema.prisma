@@ -10,11 +10,6 @@ datasource db {
   url      = env("MONGODB_URI")
 }
 
-model Tags {
-  id   String   @id @default(auto()) @map("_id") @db.ObjectId
-  tags String[]
-}
-
 model User {
   id            String    @id @default(auto()) @map("_id") @db.ObjectId
   bio           String    
@@ -22,30 +17,40 @@ model User {
   email         String    @unique
   token         String    
   image         String
+  password      String
   followedBy    User[]    @relation("UserFollows", fields: [followedByIDs], references: [id])
   followedByIDs String[]  @db.ObjectId
   following     User[]    @relation("UserFollows", fields: [followingIDs], references: [id])
   followingIDs  String[]  @db.ObjectId
-  password      String
-  articles      Article[]
+  favoriteArticleIDs String[] @db.ObjectId
+  favoriteArticles   Article[]   @relation("UserFavorites",fields: [favoriteArticleIDs], references: [id])
   comments      Comment[]
+  authored Article[] @relation("UserAuthors")
 }
 
 model Article{
   id          String    @id @default(auto()) @map("_id") @db.ObjectId  
-  slug String
+  slug String @unique
   title String
   description String
   body String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  author User @relation(fields: [authorId], references: [id])
+  author User @relation("UserAuthors",fields: [authorId], references: [username])
   authorId String
-  tagList  String[]
-  favoritedBy String[]
+  tagList String[]   @db.ObjectId
+  tags Tag[] @relation(fields: [tagList], references: [id])  
+  favoritedByIDs String[] @db.ObjectId
+  favoritedBy  User[]   @relation("UserFavorites",fields: [favoritedByIDs], references: [id])
   comments Comment[]
 }
 
+model Tag {
+  id   String   @id @default(auto()) @map("_id") @db.ObjectId
+  title String  @unique
+  articleIDs String[] @db.ObjectId
+  articles   Article[]   @relation(fields: [articleIDs], references: [id])
+}
 
 model Comment{
   id          String    @id @default(auto()) @map("_id") @db.ObjectId

@@ -12,8 +12,8 @@ async function handler(
 ) {
   switch (req.method) {
     case 'GET': {
-      const tags: TagsResponse = await getTags();
-      return res.status(200).json(tags);
+      const tags: string[] = (await getTags()).map(tag=>tag.title) ; 
+      return res.status(200).json({tags});
     }
     default:{
       throw new Error("Method not allowed");

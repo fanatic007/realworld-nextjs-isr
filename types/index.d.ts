@@ -1,5 +1,5 @@
 import { Prisma, Tags, User, Article, Comment } from '@prisma/client';
-import { articleWithComments, loginRequest, profilePayload, tagsResponse, userRequest, userPayload, articleRequest } from '../constants';
+import { articleWithComments, loginRequest, profilePayload, tagsResponse, userRequest, userPayload, articleRequest, articleResponse } from '../constants';
 
 
 type NonEmptyArray<T> = [T, ...T[]];
@@ -31,3 +31,14 @@ type FollowedByIDs = {
 }
 
 type ArticleRequest = Prisma.ArticleGetPayload<typeof articleRequest>;
+type ArticleResponse = Prisma.ArticleGetPayload<typeof articleResponse>;
+
+type ArticleWithComputedValues<T> = T & {
+  author: ProfilePayload,
+  favorited: boolean,
+  favoritesCount: number,
+}
+
+type WithTagList<T> = T & {
+  tagList: string[]
+}

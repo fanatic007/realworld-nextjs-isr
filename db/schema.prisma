@@ -36,10 +36,10 @@ model Article{
   body String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  author User @relation("UserAuthors",fields: [authorId], references: [username])
-  authorId String
-  tagList String[]   @db.ObjectId
-  tags Tag[] @relation(fields: [tagList], references: [id])  
+  authorUser User @relation("UserAuthors",fields: [author], references: [username])
+  author String
+  tagIDs String[]   @db.ObjectId
+  tags Tag[] @relation(fields: [tagIDs], references: [id])  
   favoritedByIDs String[] @db.ObjectId
   favoritedBy  User[]   @relation("UserFavorites",fields: [favoritedByIDs], references: [id])
   comments Comment[]
@@ -56,8 +56,8 @@ model Comment{
   id          String    @id @default(auto()) @map("_id") @db.ObjectId
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
-  author      User @relation(fields: [authorId], references: [id])
-  authorId    String
+  author      User @relation(fields: [authorID], references: [id])
+  authorID    String
   article     Article @relation(fields: [articleId], references: [id])
   articleId   String
   body        String

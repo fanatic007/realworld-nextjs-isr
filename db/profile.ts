@@ -1,11 +1,14 @@
 import { Prisma } from ".prisma/client";
 import { ProfilePayload, User, UserPayload, WithUserFollowing } from "../types";
 import { PrismaClient } from '@prisma/client'
+import { getUser } from "./user";
+import { profileResponseFields } from "../constants";
 
 
 const prisma = new PrismaClient()
 // READ
-export const getProfileWithFollowedBy = async (profile:ProfilePayload,userID: string)=> {
+export const getProfileWithFollowedBy = async (username:string,userID: string)=> {
+  const profile: ProfilePayload = await getUser({username}, profileResponseFields);
   let profileWithFollowing: WithUserFollowing<ProfilePayload> = {following:false,...profile}
   let followedBy = await prisma.user.findMany({
     where:  {

@@ -17,13 +17,10 @@ async function handler (
   const profileSlug = req.query.username as string;
   switch (req.method) {
     case 'GET': {
-      const profilePayload: ProfilePayload = await getUser({username:profileSlug}, profileResponseFields);
-      if(!profilePayload)
-        throw new Error("Invalid Username. No such Profile")
       const token = (req.headers.authorization as string).replace('Bearer ','');
       const {username} = getJWTPayload(token);
       const user = await getUser({username}, {id:true});
-      const profileWithFollowedBy = await getProfileWithFollowedBy(profilePayload, user.id);
+      const profileWithFollowedBy = await getProfileWithFollowedBy(username, user.id);
       const profileResponse = getResponse<ProfileResponse>(profileWithFollowedBy,'profile') as ProfileResponse;
       return res.status(200).json(profileResponse);
     }

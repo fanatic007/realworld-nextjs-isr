@@ -64,6 +64,30 @@ export const getTagsByIDs = async (tagIDs:string[]) => {
   return tags.map(tag=>tag.title);
 }
 
+export const favoriteArticle = async (slug: string, userID: string)=> {
+  let followedByUser = await prisma.article.update({
+    where: {slug},
+    data:{
+      favoritedBy: {
+        connect: {id:userID}
+      }
+    }
+  });
+  return followedByUser;
+} 
+
+export const unfavoriteArticle = async (slug: string, userID: string)=> {
+  let followedByUser = await prisma.article.update({
+    where: {slug},
+    data:{
+      favoritedBy: {
+        disconnect: {id:userID}
+      }
+    }
+  });
+  return followedByUser;
+} 
+
 function getSlug(title:string){
   return title.toLowerCase()
   .replace(/&/g, '-and-')

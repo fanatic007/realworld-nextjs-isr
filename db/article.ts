@@ -1,3 +1,4 @@
+import { prisma } from './db'
 import { Article, Prisma, PrismaClient } from '@prisma/client';
 import { profile } from 'console';
 import { title } from 'process';
@@ -7,8 +8,6 @@ import { ArticleRequest, ArticleResponse, ProfilePayload, ArticleWithComputedVal
 import { getProfileWithFollowedBy } from './profile';
 import { getUser } from './user';
 
-
-const prisma = new PrismaClient()
 // CREATE
 export const createArticle = async (article:WithTagList<ArticleRequest>,username: string)=> {
   let newArticle = await prisma.article.create({

@@ -1,10 +1,8 @@
+import { prisma } from './db'
 import { Prisma } from ".prisma/client";
 import { User, UserPayload } from "../types";
-import { PrismaClient } from '@prisma/client'
 import { userResponseFields } from "../constants";
 
-const prisma = new PrismaClient()
-// READ
 export const getUser = async (query:Partial<User>,fields?:Prisma.UserSelect)=> {
   return await prisma.user.findUnique({
     where: query,

@@ -1,7 +1,6 @@
-import { TagsResponse} from "../types";
 import { PrismaClient } from '@prisma/client'
+import { prisma } from './db'
 
-const prisma = new PrismaClient();
 // READ
 export const getTags = async () => {
   let tags = await prisma.tag.findMany({

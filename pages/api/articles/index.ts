@@ -2,8 +2,8 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { apiHandler } from '../../../helpers/api-handler';
 import { getJWTPayload } from '../../../helpers/jwt-middleware';
-import { ProfileResponse } from '../../../types/index';
-import { createArticle, getArticleWithRelations } from '../../../db/article';
+import { ArticleResponse, ArticlesResponse, ProfileResponse } from '../../../types/index';
+import { createArticle, getArticlesWithRelations } from '../../../db/article';
 import { Article } from '@prisma/client';
 import { getUser } from '../../../db/user';
 
@@ -11,22 +11,22 @@ export default apiHandler(handler);
 
 async function handler (
   req: NextApiRequest,
-  res: NextApiResponse<any>
+  res: NextApiResponse<ArticlesResponse | ArticleResponse>
 ) {
+  const token = (req.headers.authorization as string).replace('Bearer ','');
+  const {username} = getJWTPayload(token);
+  const user = await getUser({username}, {id:true});
   switch (req.method) {
     case 'POST': {
-      const token = (req.headers.authorization as string).replace('Bearer ','');
       const {username} = getJWTPayload(token);
-      const article = await createArticle(req.body.article , username);
+      const newArticle = await createArticle(req.body.article , username);
+      const [article] = await getArticlesWithRelations({slug: newArticle.slug},user.id);
       return res.status(200).json({article});
     }
     case 'GET': {
-      const token = (req.headers.authorization as string).replace('Bearer ','');
-      const {username} = getJWTPayload(token);
-      const user = await getUser({username}, {id:true});
       let query = req.query;
-      const articles = await getArticleWithRelations(query,user.id);
-      return res.status(200).json({articles, articlesCount:articles.length});
+      const articles = await getArticlesWithRelations(query,user.id);
+      return res.status(200).json({articles: articles, articlesCount:articles.length});
     }
     default: {
       throw new Error("Method Not Allowed")

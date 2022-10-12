@@ -30,15 +30,23 @@ type FollowedByIDs = {
   followedByIDs: string[];
 }
 
+type Article = Article;
+
 type ArticleRequest = Prisma.ArticleGetPayload<typeof articleRequest>;
-type ArticleResponse = Prisma.ArticleGetPayload<typeof articleResponse>;
+type ArticleResponseData = Prisma.ArticleGetPayload<typeof articleResponse>;
 
 type ArticleWithComputedValues<T> = T & {
-  author: ProfilePayload,
+  author : WithFollowing<ProfilePayload>,
   favorited: boolean,
   favoritesCount: number,
+  favoritedByIDs: never,
+  tagIDs: never
 }
 
 type WithTagList<T> = T & {
   tagList: string[]
 }
+
+type SingleArticle = WithTagList<ArticleWithComputedValues<ArticleResponseData>>;
+type ArticlesResponse = {articles: SingleArticle[], articlesCount:number};
+type ArticleResponse = {article: SingleArticle};

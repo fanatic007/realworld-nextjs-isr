@@ -1,15 +1,16 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type { NextApiRequest, NextApiResponse } from 'next';
-import { getArticleWithRelations } from '../../../../db/article';
+import { getArticlesWithRelations } from '../../../../db/article';
 import { getUser } from '../../../../db/user';
 import { apiHandler } from '../../../../helpers/api-handler';
 import { getJWTPayload } from '../../../../helpers/jwt-middleware';
+import { ArticleResponse } from '../../../../types';
 
 export default apiHandler(handler);
 
 async function handler (
   req: NextApiRequest,
-  res: NextApiResponse<any>
+  res: NextApiResponse<ArticleResponse>
 ) {
   const slug = req.query.slug as string;
   
@@ -17,8 +18,8 @@ async function handler (
     case 'GET': {
       const token = (req.headers.authorization as string).replace('Bearer ','');
       const {username} = getJWTPayload(token);
-      const user = await getUser({username}, {id:true});
-      const [article] = await getArticleWithRelations({slug},user.id);
+      const user = await getUser({username}, {id:true}); 
+      const [article] = await getArticlesWithRelations({slug},user.id);
       return res.status(200).json({article});
     }
     default: {

@@ -1,12 +1,8 @@
-import { prisma } from './db'
-import { Article, Prisma, PrismaClient } from '@prisma/client';
-import { profile } from 'console';
-import { title } from 'process';
-import { articleRequestFields, articleResponseFields, profileResponseFields, tagsResponseFields } from '../constants';
-import Username from '../pages/api/profiles/[username]';
-import { ArticleRequest, ArticleResponse, ProfilePayload, ArticleWithComputedValues, WithUserFollowing, WithTagList } from "../types";
+import { Prisma } from '@prisma/client';
+import { articleResponseFields } from '../constants';
+import { ArticleRequest, ArticleResponseData, SingleArticle, WithTagList } from "../types";
+import { prisma } from './db';
 import { getProfileWithFollowedBy } from './profile';
-import { getUser } from './user';
 
 // CREATE
 export const createArticle = async (article:WithTagList<ArticleRequest>,username: string)=> {
@@ -35,29 +31,24 @@ export const createArticle = async (article:WithTagList<ArticleRequest>,username
   return newArticle;
 }
 
-export const getArticleBySlug = (slug:string, fields?:Prisma.ArticleSelect ):any => {
-
-}
-
-export const getArticleWithRelations = async (query:Prisma.ArticleWhereInput, userID: string)=> {
-  let articleResult = await prisma.article.findMany({
+export const getArticlesWithRelations = async (query:Prisma.ArticleWhereInput, userID: string)=> {
+  let articlesResult = await prisma.article.findMany({
       where: query,
       select: articleResponseFields
     }
   );
-  let article:any;
-  for(article of articleResult){
-    let articleWithRelations = article as any;
+  let article:ArticleResponseData;
+  for(article of articlesResult){
+    let articleWithRelations = article as SingleArticle;
     articleWithRelations['tagList'] =  await getTagsByIDs(article.tagIDs);
     delete articleWithRelations['tagIDs'];
     articleWithRelations['author'] = await getProfileWithFollowedBy(article.author,userID);
-    delete articleWithRelations['authorUser'];
     articleWithRelations['favorited'] = article.favoritedByIDs.includes(userID);
     articleWithRelations['favoritesCount'] = article.favoritedByIDs.length;    
     delete articleWithRelations['favoritedByIDs'];
-    articleWithRelations = article;
+    article = articleWithRelations;
   }
-  return articleResult;
+  return articlesResult as SingleArticle[];
 }
 
 export const getTagsByIDs = async (tagIDs:string[]) => {

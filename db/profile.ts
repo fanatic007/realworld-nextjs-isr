@@ -23,10 +23,10 @@ export const getProfileWithFollowedBy = async (username:string,userID: string)=>
 }
 
 // Update
-export const followUser = async (profile:ProfilePayload,userID: string)=> {
+export const followUser = async (username:string,userID: string)=> {
   let followedByUser = await prisma.user.update({
     where:  {
-      username: profile.username,
+      username: username,
     },
     data:{
       followedBy: {
@@ -37,10 +37,10 @@ export const followUser = async (profile:ProfilePayload,userID: string)=> {
   return followedByUser;
 }
 
-export const unfollowUser = async (profile:ProfilePayload,userID: string)=> {
+export const unfollowUser = async (username:string,userID: string)=> {
   let followedByUser = await prisma.user.update({
     where:  {
-      username: profile.username,
+      username: username,
     },
     data:{
       followedBy: {

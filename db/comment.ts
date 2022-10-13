@@ -1,7 +1,8 @@
 import { prisma } from './db'
 import { Prisma } from ".prisma/client";
-import { User, UserPayload } from "../types";
+import { ProfilePayload, User, UserPayload, WithAuthorProfile, WithUserFollowing } from "../types";
 import { userResponseFields } from "../constants";
+import { getProfileWithFollowedBy } from './profile';
 
 export const createComment = async (body:string, username:string,slug:string)=> {
   return await prisma.comment.create({
@@ -17,19 +18,28 @@ export const createComment = async (body:string, username:string,slug:string)=> 
   });
 }
 
-export const getComments = async (userData:Prisma.UserCreateInput) => {
-  return await prisma.user.create({
-    data: userData,
-    select: userResponseFields
+export const getCommentsWithAuthorProfile = async (slug:string, userID:string, commentID?:string) => {
+  let comments = await prisma.comment.findMany({
+    where: {
+      id:commentID,
+      articleSlug: slug
+    },
   });
+  let commentsResult =[] as  WithAuthorProfile<Comment>[];
+  for(let comment of comments){
+    let commentWithAuthorProfile = comment as any;
+    commentWithAuthorProfile['author'] = await getProfileWithFollowedBy(comment.author,userID);    
+    delete commentWithAuthorProfile['articleSlug'];
+    commentsResult.push(commentWithAuthorProfile);
+  }
+  return commentsResult;
 }
 
-export const deleteComment = async (query:Partial<User>,data:Partial<User>) => {
-  const updatedUser: UserPayload = await prisma.user.update({
-    where:query,
-    data: data,
-    select: userResponseFields
+export const deleteComment = async (commentID:string) => {
+  await prisma.comment.delete({
+    where:{
+      id:commentID
+    }
   });
-  return updatedUser;
 }
 

@@ -22,7 +22,7 @@ type UserPayload = Prisma.UserGetPayload<typeof userPayload>
 type UserResponse = { user:UserPayload }
 
 type ProfilePayload = Prisma.UserGetPayload<typeof profilePayload>
-type ProfileResponse = { profile:profile }
+type ProfileResponse = { profile:WithUserFollowing<ProfilePayload> }
 type WithUserFollowing<T> = T & {
   following: boolean
 }
@@ -50,3 +50,9 @@ type WithTagList<T> = T & {
 type SingleArticle = WithTagList<ArticleWithComputedValues<ArticleResponseData>>;
 type ArticlesResponse = {articles: SingleArticle[], articlesCount:number};
 type ArticleResponse = {article: SingleArticle};
+
+type Comment = Comment;
+
+type WithAuthorProfile<T> = T & {
+  author: WithUserFollowing<ProfilePayload>
+}

@@ -18,13 +18,13 @@ model User {
   token         String    
   image         String
   password      String
-  followedBy    User[]    @relation("UserFollows", fields: [followedByIDs], references: [id])
   followedByIDs String[]  @db.ObjectId
-  following     User[]    @relation("UserFollows", fields: [followingIDs], references: [id])
+  followedBy    User[]    @relation("UserFollows", fields: [followedByIDs], references: [id])
   followingIDs  String[]  @db.ObjectId
+  following     User[]    @relation("UserFollows", fields: [followingIDs], references: [id])
   favoriteArticleIDs String[] @db.ObjectId
   favoriteArticles   Article[]   @relation("UserFavorites",fields: [favoriteArticleIDs], references: [id])
-  comments      Comment[]
+  comments      Comment[] @relation("UserComments")
   authored Article[] @relation("UserAuthors")
 }
 
@@ -36,13 +36,13 @@ model Article{
   body String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  authorUser User @relation("UserAuthors",fields: [author], references: [username])
   author String
+  authorUser User @relation("UserAuthors",fields: [author], references: [username])
   tagIDs String[]   @db.ObjectId
   tags Tag[] @relation(fields: [tagIDs], references: [id])  
   favoritedByIDs String[] @db.ObjectId
   favoritedBy  User[]   @relation("UserFavorites",fields: [favoritedByIDs], references: [id])
-  comments Comment[]
+  comments Comment[] @relation("ArticleComments")
 }
 
 model Tag {
@@ -54,11 +54,11 @@ model Tag {
 
 model Comment{
   id          String    @id @default(auto()) @map("_id") @db.ObjectId
+  body        String
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
-  author      User @relation(fields: [authorID], references: [id])
-  authorID    String
-  article     Article @relation(fields: [articleId], references: [id])
-  articleId   String
-  body        String
+  author    String
+  authorUser      User @relation("UserComments",fields: [author], references: [username])
+  articleSlug   String
+  article     Article @relation("ArticleComments",fields: [articleSlug], references: [slug])
 }

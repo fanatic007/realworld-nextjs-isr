@@ -25,7 +25,7 @@ async function  handler(
       const user= await getUser({email},{id:true,username:true});
       if (!user) 
         throw 'Username or password is incorrect';
-      const token = generateToken(user.username);
+      const token = generateToken(user.id,user.username);
       const updatedUser: UserPayload = await updateUser({ id: user.id },{token:token});
       const userResponse = getResponse<UserResponse>(updatedUser,'user') as UserResponse;
       return res.status(200).json(userResponse);

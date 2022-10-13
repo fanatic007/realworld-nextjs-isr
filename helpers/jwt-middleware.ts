@@ -17,8 +17,8 @@ function jwtMiddleware(req:NextApiRequest, res:NextApiResponse<any>) {
     return util.promisify(middleware)(req, res);
 }
 
-function generateToken(username:string): string {
-    return jwt.sign({ username }, serverRuntimeConfig.secret, { expiresIn: '60s' });    
+function generateToken(id:string,username:string): string {
+    return jwt.sign({ id, username }, serverRuntimeConfig.secret, { expiresIn: '60s' });    
 }
 
 function getJWTPayload(token:String) {    

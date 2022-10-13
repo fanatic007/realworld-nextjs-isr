@@ -24,8 +24,25 @@ async function handler (
       return res.status(200).json({article});
     }
     case 'GET': {
-      let query = req.query;
-      const articles = await getArticlesWithRelations(query,user.id);
+      const queryParams:any = req.query;
+      let query = {
+        tags: {
+          some: {
+            title: {
+              contains: queryParams.tag,
+            },
+          },
+        },
+        favoritedBy: {
+          some: {
+            username: {
+              contains: queryParams.favorited,
+            },
+          },
+        },
+        author: queryParams.author,
+      }
+      const articles = await getArticlesWithRelations(query, user.id, queryParams.offset, queryParams.limit);
       return res.status(200).json({articles: articles, articlesCount:articles.length});
     }
     default: {

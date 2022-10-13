@@ -31,10 +31,12 @@ export const createArticle = async (article:WithTagList<ArticleRequest>,username
   return newArticle;
 }
 
-export const getArticlesWithRelations = async (query:Prisma.ArticleWhereInput, userID: string)=> {
+export const getArticlesWithRelations = async (where:Prisma.ArticleWhereInput, userID: string, skip?:number ,take?:number)=> {
   let articlesResult = await prisma.article.findMany({
-      where: query,
-      select: articleResponseFields
+      where,
+      select: articleResponseFields,
+      skip,
+      take
     }
   );
   let article:ArticleResponseData;

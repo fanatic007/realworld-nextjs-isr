@@ -4,13 +4,12 @@ import { deleteComment, getCommentsWithAuthorProfile } from '../../../../../db/c
 import { getUser } from '../../../../../db/user';
 import { apiHandler } from '../../../../../helpers/api-handler';
 import { getJWTPayload } from '../../../../../helpers/jwt-middleware';
-import { ProfilePayload, WithAuthorProfile, WithUserFollowing } from '../../../../../types';
 
 export default apiHandler(handler);
 
 async function handler (
   req: NextApiRequest,
-  res: NextApiResponse<any>
+  res: NextApiResponse<void>
 ) {
   const slug = req.query.slug as string;
   const token = (req.headers.authorization as string).replace('Bearer ','');

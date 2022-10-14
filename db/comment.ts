@@ -1,7 +1,5 @@
-import { prisma } from './db'
-import { Prisma } from ".prisma/client";
-import { ProfilePayload, User, UserPayload, WithAuthorProfile, WithUserFollowing } from "../types";
-import { userResponseFields } from "../constants";
+import { SingleComment } from "../types";
+import { prisma } from './db';
 import { getProfileWithFollowedBy } from './profile';
 
 export const createComment = async (body:string, username:string,slug:string)=> {
@@ -25,14 +23,13 @@ export const getCommentsWithAuthorProfile = async (slug:string, userID:string, c
       articleSlug: slug
     },
   });
-  let commentsResult =[] as  WithAuthorProfile<Comment>[];
+  let commentsResult =[];
   for(let comment of comments){
     let commentWithAuthorProfile = comment as any;
     commentWithAuthorProfile['author'] = await getProfileWithFollowedBy(comment.author,userID);    
-    delete commentWithAuthorProfile['articleSlug'];
     commentsResult.push(commentWithAuthorProfile);
   }
-  return commentsResult;
+  return commentsResult  as SingleComment[];
 }
 
 export const deleteComment = async (commentID:string) => {

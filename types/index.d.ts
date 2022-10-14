@@ -51,8 +51,21 @@ type SingleArticle = WithTagList<ArticleWithComputedValues<ArticleResponseData>>
 type ArticlesResponse = {articles: SingleArticle[], articlesCount:number};
 type ArticleResponse = {article: SingleArticle};
 
+type QueryParams = {
+  favorited?:string,
+  tag?:string,
+  author?:string,
+  limit?:number,
+  offset?:number
+}
+
 type Comment = Comment;
 
 type WithAuthorProfile<T> = T & {
   author: WithUserFollowing<ProfilePayload>
+  articleSlug: never;
 }
+type SingleComment = WithAuthorProfile<Comment>
+type CommentsResponse = { comments:SingleComment[] }
+type CommentResponse = { comment:SingleComment }
+

@@ -5,13 +5,13 @@ import { getProfileWithFollowedBy } from './profile';
 export const createComment = async (body:string, username:string,slug:string)=> {
   return await prisma.comment.create({
     data: {
-      body, 
+      body,      
       article: {
         connect: { slug }
-      },
+      }, 
       authorUser:{
         connect:{ username }
-      }, 
+      },
     }
   });
 }
@@ -27,6 +27,7 @@ export const getCommentsWithAuthorProfile = async (slug:string, userID:string, c
   for(let comment of comments){
     let commentWithAuthorProfile = comment as any;
     commentWithAuthorProfile['author'] = await getProfileWithFollowedBy(comment.author,userID);    
+    delete commentWithAuthorProfile['articleSlug'];
     commentsResult.push(commentWithAuthorProfile);
   }
   return commentsResult  as SingleComment[];

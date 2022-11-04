@@ -1,4 +1,4 @@
-import { Prisma } from '@prisma/client';
+import { Article, Prisma } from '@prisma/client';
 import { articleResponseFields } from '../constants';
 import { ArticleRequest, ArticleResponseData, SingleArticle, WithTagList } from "../types";
 import { prisma } from './db';
@@ -19,7 +19,7 @@ export const createArticle = async (article:WithTagList<ArticleRequest>,username
       },
       tags: {
         connectOrCreate: article.tagList.map((tag:string)=> { 
-            return { 
+            return {
               where: { title:tag },
               create: {title:tag }
             } 
@@ -44,7 +44,7 @@ export const getArticlesWithRelations = async (where:Prisma.ArticleWhereInput, u
     let articleWithRelations = article as SingleArticle;
     articleWithRelations['tagList'] =  await getTagsByIDs(article.tagIDs);
     delete articleWithRelations['tagIDs'];
-    articleWithRelations['author'] = await getProfileWithFollowedBy(article.author,userID);
+    articleWithRelations['author'] = await getProfileWithFollowedBy(article.author as string,userID);
     articleWithRelations['favorited'] = article.favoritedByIDs.includes(userID);
     articleWithRelations['favoritesCount'] = article.favoritedByIDs.length;    
     delete articleWithRelations['favoritedByIDs'];
@@ -90,9 +90,89 @@ export const unfavoriteArticle = async (slug: string, userID: string)=> {
   return followedByUser;
 } 
 
+export const deleteArticleWithRelations = async (slug: string)=> {
+  let article = await prisma.article.findUnique({
+    where:{slug}
+    }
+  ) as Article;
+
+  prisma.$transaction([
+       disconnectAuthor(article),
+    ...disconnectFavoritedBy(article),
+    ...disconnectTags(article),
+       deleteArticle(article)
+  ]).then(()=>
+      clearTags(article)
+  ) ;
+}
+
 function getSlug(title:string){
   return title.toLowerCase()
   .replace(/&/g, '-and-')
   .replace(/[\s\W-]+/g, '-')
   .replace(/-$/, '');
+}
+
+function deleteArticle(article: Article){
+  return prisma.article.delete({
+    where: {slug:article.slug},
+  })  
+}
+
+function disconnectAuthor(article:Article){
+  return prisma.user.update({
+    where: {
+      username: article?.author as string
+    },
+    data: {
+      authored: {
+        disconnect: {slug: article?.slug},
+      },      
+    }
+  })
+}
+
+function disconnectFavoritedBy(article:Article){
+  return article.favoritedByIDs.map(id => prisma.user.update({
+    where:{
+      id
+    },
+    data:{
+      favoriteArticles:{
+        disconnect:{ id:article.id }
+      }
+    }
+  }));
+}
+
+function disconnectTags(article: Article){
+  return article.tagIDs.map(id=> prisma.tag.update({
+    where:{
+      id
+    },
+    data:{
+      articles:{
+        disconnect: { id:article.id }
+      }
+    }
+  }));
+}
+
+async function clearTags(article:Article){
+  let tags = await prisma.tag.findMany({
+    where:{
+      id: {in:article.tagIDs}
+    },
+    include:{
+      articles:true
+    }
+  });
+  tags.forEach(async tag=>{
+    if(tag.articleIDs.length===0)
+      await prisma.tag.delete({
+        where:{
+          id:tag.id
+        }
+      });
+  });
 }

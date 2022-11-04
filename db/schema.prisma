@@ -12,10 +12,10 @@ datasource db {
 
 model User {
   id            String    @id @default(auto()) @map("_id") @db.ObjectId
-  bio           String    
+  bio           String
   username      String    @unique
   email         String    @unique
-  token         String    
+  token         String
   image         String
   password      String
   followedByIDs String[]  @db.ObjectId
@@ -29,27 +29,28 @@ model User {
 }
 
 model Article{
-  id          String    @id @default(auto()) @map("_id") @db.ObjectId  
+  id          String    @id @default(auto()) @map("_id") @db.ObjectId
   slug String @unique
   title String
   description String
   body String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  author String
-  authorUser User @relation("UserAuthors",fields: [author], references: [username])
+  author String?
+  authorUser User? @relation("UserAuthors",fields: [author], references: [username])
   tagIDs String[]   @db.ObjectId
-  tags Tag[] @relation(fields: [tagIDs], references: [id])  
+  tags Tag[] @relation("ArticleTags", fields: [tagIDs], references: [id])
   favoritedByIDs String[] @db.ObjectId
   favoritedBy  User[]   @relation("UserFavorites",fields: [favoritedByIDs], references: [id])
   comments Comment[] @relation("ArticleComments")
+  @@unique([id,slug])
 }
 
 model Tag {
   id   String   @id @default(auto()) @map("_id") @db.ObjectId
   title String  @unique
   articleIDs String[] @db.ObjectId
-  articles   Article[]   @relation(fields: [articleIDs], references: [id])
+  articles   Article[]   @relation("ArticleTags", fields: [articleIDs], references: [id])
 }
 
 model Comment{
@@ -60,5 +61,5 @@ model Comment{
   author    String
   authorUser      User @relation("UserComments",fields: [author], references: [username])
   articleSlug   String
-  article     Article @relation("ArticleComments",fields: [articleSlug], references: [slug])
+  article     Article @relation("ArticleComments",fields: [articleSlug], references: [slug], onDelete:Cascade)
 }

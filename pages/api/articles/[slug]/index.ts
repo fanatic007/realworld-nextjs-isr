@@ -1,6 +1,6 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type { NextApiRequest, NextApiResponse } from 'next';
-import { getArticlesWithRelations } from '../../../../db/article';
+import { deleteArticleWithRelations, getArticlesWithRelations } from '../../../../db/article';
 import { getUser } from '../../../../db/user';
 import { apiHandler } from '../../../../helpers/api-handler';
 import { getJWTPayload } from '../../../../helpers/jwt-middleware';
@@ -21,6 +21,16 @@ async function handler (
       const user = await getUser({username}, {id:true}); 
       const [article] = await getArticlesWithRelations({slug},user.id);
       return res.status(200).json({article});
+    }
+    case 'DELETE': {
+      const token = (req.headers.authorization as string).replace('Bearer ','');
+      const {username} = getJWTPayload(token);
+      const user = await getUser({username}, {id:true}); 
+      const [article] = await getArticlesWithRelations({slug},user.id);      
+      if(!(article && article.author.username === username))
+        throw Error("cannot delete");
+      await deleteArticleWithRelations(slug);
+      return res.status(200).end();
     }
     default: {
       throw new Error("Method Not Allowed")

@@ -15,13 +15,14 @@ async function handler(
   token:string
 ) {
   const {userID} = getJWTPayload(token);
-  const userPayload: UserPayload = {token,...(await getUser({id:userID}, userResponseFields))};
   switch (req.method) {
     case 'GET': {   
+      const userPayload: UserPayload = {token,...(await getUser({id:userID}, userResponseFields))};
       const userResponse = getResponse<UserResponse>(userPayload,'user') as UserResponse;
       return res.status(200).json(userResponse);
     }
     case 'PUT': {
+      const userPayload: UserPayload = {token,...(await updateUser({id:userID}, req.body.user))};
       const userResponse = getResponse<UserResponse>(userPayload,'user') as UserResponse;
       return res.status(200).json(userResponse);
     }

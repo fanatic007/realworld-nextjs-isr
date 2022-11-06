@@ -44,10 +44,10 @@ export const getArticlesWithRelations = async (where:Prisma.ArticleWhereInput, u
     let articleWithRelations = article as SingleArticle;
     articleWithRelations['tagList'] =  await getTagsByIDs(article.tagIDs);
     delete articleWithRelations['tagIDs'];
-    articleWithRelations['favoritesCount'] = article.favoritedByIDs.length;    
+    articleWithRelations['favoritesCount'] = article.favoritedByIDs.length;
+    articleWithRelations['author'] = await getProfileWithFollowedBy(article.author as string,userID);
     if(userID){
-      articleWithRelations['author'] = await getProfileWithFollowedBy(article.author as string,userID);
-      articleWithRelations['favorited'] = article.favoritedByIDs.includes(userID);  
+      articleWithRelations['favorited'] = article.favoritedByIDs.includes(userID);
     }
     delete articleWithRelations['favoritedByIDs'];
     article = articleWithRelations;

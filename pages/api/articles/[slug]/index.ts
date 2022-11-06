@@ -15,7 +15,7 @@ async function handler (
   const slug = req.query.slug as string;
   switch (req.method) {
     case 'GET': {
-      const userID = token?getJWTPayload(token).id : undefined;
+      const userID = token?getJWTPayload(token).userID : undefined;
       const [article] = await getArticlesWithRelations({slug},userID);
       return res.status(200).json({article});
     }

@@ -13,16 +13,17 @@ async function handler (
   res: NextApiResponse<ArticlesResponse | ArticleResponse>,
   token:string
 ) {
-  const {userID, username} = getJWTPayload(token);
   switch (req.method) {
     case 'POST': {
+      const {userID, username} = getJWTPayload(token);
       const newArticle = await createArticle(req.body.article , username);
       const [article] = await getArticlesWithRelations({slug: newArticle.slug},userID);
       return res.status(200).json({article});
     }
-    case 'GET': {
+    case 'GET': {      
       const queryParams:QueryParams = req.query;
-      let query = getArticleQuery(queryParams);
+      let query = getArticleQuery(queryParams);   
+      const {userID} = token?getJWTPayload(token):{userID:undefined};
       const articles = await getArticlesWithRelations(query, userID, queryParams.offset, queryParams.limit);
       return res.status(200).json({articles: articles, articlesCount:articles.length});
     }

@@ -16,7 +16,7 @@ async function handler (
   const profileSlug = req.query.username as string;
   switch (req.method) {
     case 'GET': {
-      const {userID} = getJWTPayload(token);
+      const {userID} = token?getJWTPayload(token):{userID:undefined};
       const profileWithFollowedBy = await getProfileWithFollowedBy(profileSlug, userID);
       const profileResponse = getResponse<ProfileResponse>(profileWithFollowedBy,'profile') as ProfileResponse;
       return res.status(200).json(profileResponse);

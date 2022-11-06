@@ -13,7 +13,8 @@ function jwtMiddleware(req:NextApiRequest, res:NextApiResponse<any>) {
             /^\/api\/users/,
             /^\/api\/users\/login/,
             /^\/api\/tags/,
-            /^\/api\/articles\/.*/
+            /^\/api\/articles/,
+            /^\/api\/profiles/
         ]
     });
     return util.promisify(middleware)(req, res);

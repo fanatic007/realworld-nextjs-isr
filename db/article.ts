@@ -31,7 +31,7 @@ export const createArticle = async (article:WithTagList<ArticleRequest>,username
   return newArticle;
 }
 
-export const getArticlesWithRelations = async (where:Prisma.ArticleWhereInput, userID: string, skip?:number ,take?:number)=> {
+export const getArticlesWithRelations = async (where:Prisma.ArticleWhereInput, userID?: string, skip?:number ,take?:number)=> {
   let articlesResult = await prisma.article.findMany({
       where,
       select: articleResponseFields,
@@ -44,9 +44,11 @@ export const getArticlesWithRelations = async (where:Prisma.ArticleWhereInput, u
     let articleWithRelations = article as SingleArticle;
     articleWithRelations['tagList'] =  await getTagsByIDs(article.tagIDs);
     delete articleWithRelations['tagIDs'];
-    articleWithRelations['author'] = await getProfileWithFollowedBy(article.author as string,userID);
-    articleWithRelations['favorited'] = article.favoritedByIDs.includes(userID);
     articleWithRelations['favoritesCount'] = article.favoritedByIDs.length;    
+    if(userID){
+      articleWithRelations['author'] = await getProfileWithFollowedBy(article.author as string,userID);
+      articleWithRelations['favorited'] = article.favoritedByIDs.includes(userID);  
+    }
     delete articleWithRelations['favoritedByIDs'];
     article = articleWithRelations;
   }

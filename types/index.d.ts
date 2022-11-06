@@ -18,7 +18,7 @@ type User=User;
 type LoginRequest = Prisma.UserGetPayload<typeof loginRequest>
 
 type UserRequest = Prisma.UserGetPayload<typeof userRequest>
-type UserPayload = Prisma.UserGetPayload<typeof userPayload>
+type UserPayload = Prisma.UserGetPayload<typeof userPayload> & {token:string};
 type UserResponse = { user:UserPayload }
 
 type ProfilePayload = Prisma.UserGetPayload<typeof profilePayload>

@@ -15,7 +15,6 @@ model User {
   bio           String
   username      String    @unique
   email         String    @unique
-  token         String
   image         String
   password      String
   followedByIDs String[]  @db.ObjectId

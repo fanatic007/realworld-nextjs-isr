@@ -1,13 +1,11 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
-import type { NextApiRequest, NextApiResponse } from 'next';
-import { addUser } from '../../../db/user';
-import { apiHandler } from '../../../helpers/api-handler';
-import { getUser } from '../../../db/user';
-import { UserRequest, UserPayload, UserResponse } from '../../../types/index';
-import { USER_DEFAULT } from '../../../constants';
 import { Prisma } from '@prisma/client';
+import type { NextApiRequest, NextApiResponse } from 'next';
+import { USER_DEFAULT } from '../../../constants';
+import { addUser, getUser } from '../../../db/user';
+import { apiHandler } from '../../../helpers/api-handler';
 import { getResponse } from '../../../helpers/type-helpers';
-import { generateToken } from '../../../helpers/jwt-middleware';
+import { UserPayload, UserRequest, UserResponse } from '../../../types/index';
 
 export default apiHandler(handler);
 

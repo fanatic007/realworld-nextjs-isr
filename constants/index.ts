@@ -1,10 +1,11 @@
 import { User } from "../types/";
 import { Prisma } from '@prisma/client';
 
+export const EXPIRY_TIME = '600s';
+
 export const USER_DEFAULT: Partial<User> = {
   image:'',
-  bio:'',
-  token:''
+  bio:''
 }
 
 export const tagsResponseFields = { title: true }
@@ -12,7 +13,7 @@ export const tagsResponseFields = { title: true }
 export const loginRequestFields = { email:true, password:true };
 export const userGetRequestFields = { email:true,username:true,password:true };
 export const userUpdateRequestFields = { email:true, username:true ,password:true ,bio:true, image:true };
-export const userResponseFields= { email:true,username:true,image:true, bio:true, token:true };
+export const userResponseFields= { email:true,username:true,image:true, bio:true};
 export const profileResponseFields = { username:true ,image:true ,bio:true };
 export const articleRequestFields = { title: true, description: true, body: true }
 export const articleResponseFields = { slug:true,title: true, description: true, body: true, createdAt:true, updatedAt:true, favoritedByIDs:true, author:true, tagIDs:true}

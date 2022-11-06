@@ -9,7 +9,8 @@ function apiHandler(handler: Function) {
     ) => {
       try {
         await jwtMiddleware(req, res);
-        await handler(req, res);
+        const token = (req.headers.authorization as string)?.replace('Bearer ','');
+        await handler(req, res, token);
       } 
       catch (err:unknown) {
         errorHandler(<Error>err, res);

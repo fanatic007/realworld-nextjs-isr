@@ -1,5 +1,5 @@
 import { Prisma, Tags, User, Article, Comment } from '@prisma/client';
-import { articleWithComments, loginRequest, profilePayload, tagsResponse, userRequest, userPayload, articleRequest, articleResponse } from '../constants';
+import { articleWithComments, LOGIN_REQUEST, PROFILE_PAYLOAD, TAGS_RESPONSE, USER_REQUEST, USER_PAYLOAD, ARTICLE_REQUEST, ARTICLE_RESPONSE } from '../constants';
 
 
 type NonEmptyArray<T> = [T, ...T[]];
@@ -11,17 +11,17 @@ type ErrorResponse = { errors: Errors }
 
 type Tags=Tags;
 
-type TagsResponse = Prisma.TagsGetPayload<typeof tagsResponse>;
+type TagsResponse = Prisma.TagsGetPayload<typeof TAGS_RESPONSE>;
 
 type User=User;
 
-type LoginRequest = Prisma.UserGetPayload<typeof loginRequest>
+type LoginRequest = Prisma.UserGetPayload<typeof LOGIN_REQUEST>
 
-type UserRequest = Prisma.UserGetPayload<typeof userRequest>
-type UserPayload = Prisma.UserGetPayload<typeof userPayload> & {token:string};
+type UserRequest = Prisma.UserGetPayload<typeof USER_REQUEST>
+type UserPayload = Prisma.UserGetPayload<typeof USER_PAYLOAD> & {token:string};
 type UserResponse = { user:UserPayload }
 
-type ProfilePayload = Prisma.UserGetPayload<typeof profilePayload>
+type ProfilePayload = Prisma.UserGetPayload<typeof PROFILE_PAYLOAD>
 type ProfileResponse = { profile:WithUserFollowing<ProfilePayload> }
 type WithUserFollowing<T> = T & {
   following: boolean
@@ -32,8 +32,8 @@ type FollowedByIDs = {
 
 type Article = Article;
 
-type ArticleRequest = Prisma.ArticleGetPayload<typeof articleRequest>;
-type ArticleResponseData = Prisma.ArticleGetPayload<typeof articleResponse>;
+type ArticleRequest = Prisma.ArticleGetPayload<typeof ARTICLE_REQUEST>;
+type ArticleResponseData = Prisma.ArticleGetPayload<typeof ARTICLE_RESPONSE>;
 
 type ArticleWithComputedValues<T> = T & {
   author : WithFollowing<ProfilePayload>,

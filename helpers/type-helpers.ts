@@ -1,4 +1,4 @@
-import { profilePayload } from "../constants"
+import { PROFILE_PAYLOAD } from "../constants"
 import { User, ProfilePayload, WithUserFollowing, FollowedByIDs  } from "../types"
 
 export const getResponse = <T>( payload: any,fieldName:string) => {

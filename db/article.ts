@@ -1,5 +1,5 @@
 import { Article, Prisma } from '@prisma/client';
-import { articleResponseFields } from '../constants';
+import { ARTICLE_RESPONSE_FIELDS } from '../constants';
 import { ArticleRequest, ArticleResponseData, SingleArticle, WithTagList } from "../types";
 import { prisma } from './db';
 import { getProfileWithFollowedBy } from './profile';
@@ -34,7 +34,7 @@ export const createArticle = async (article:WithTagList<ArticleRequest>,username
 export const getArticlesWithRelations = async (where:Prisma.ArticleWhereInput, userID?: string, skip?:number ,take?:number)=> {
   let articlesResult = await prisma.article.findMany({
       where,
-      select: articleResponseFields,
+      select: ARTICLE_RESPONSE_FIELDS,
       skip,
       take
     }

@@ -1,7 +1,7 @@
 
 import { NextApiRequest, NextApiResponse } from 'next';
 import getConfig from 'next/config';
-import { userResponseFields } from '../../../constants';
+import { USER_RESPONSE_FIELDS } from '../../../constants';
 import { getUser } from '../../../db/user';
 import { apiHandler } from '../../../helpers/api-handler';
 import { generateToken } from '../../../helpers/jwt-middleware';
@@ -22,7 +22,7 @@ async function  handler(
         if (!user || user.password != password )
           throw 'Username or password is incorrect';
         const token = generateToken(user.id,user.username)
-        const loginPayload: UserPayload = {token, ...(await getUser({id:user.id}, userResponseFields))};
+        const loginPayload: UserPayload = {token, ...(await getUser({id:user.id}, USER_RESPONSE_FIELDS))};
         const userResponse = getResponse<UserResponse>(loginPayload,'user') as UserResponse;
         return res.status(200).json(userResponse);
       default:

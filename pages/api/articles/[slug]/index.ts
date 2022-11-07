@@ -1,6 +1,7 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
+import { Article } from '@prisma/client';
 import type { NextApiRequest, NextApiResponse } from 'next';
-import { deleteArticleWithRelations, getArticlesWithRelations } from '../../../../db/article';
+import { deleteArticleWithRelations, getArticlesWithRelations, updateArticle } from '../../../../db/article';
 import { apiHandler } from '../../../../helpers/api-handler';
 import { getJWTPayload } from '../../../../helpers/jwt-middleware';
 import { ArticleResponse } from '../../../../types';
@@ -13,15 +14,21 @@ async function handler (
   token: string
 ) {
   const slug = req.query.slug as string;
+  const {userID, username} = token?getJWTPayload(token) : {userID:undefined, username:undefined};
+  const [article] = await getArticlesWithRelations({slug},userID);
   switch (req.method) {
     case 'GET': {
-      const userID = token?getJWTPayload(token).userID : undefined;
-      const [article] = await getArticlesWithRelations({slug},userID);
       return res.status(200).json({article});
     }
+    case 'PUT': {
+      let data = req.body.article;
+      if(!(article && article.author.username === username))
+        throw Error("cannot update");
+      const updatedArticle = await updateArticle({slug},data) as Article;
+      const [updatedArticleWithRelations] = await getArticlesWithRelations({slug:updatedArticle.slug},userID);
+      return res.status(200).json({article:updatedArticleWithRelations});
+    }
     case 'DELETE': {
-      const {username,userID} = getJWTPayload(token);
-      const [article] = await getArticlesWithRelations({slug},userID);
       if(!(article && article.author.username === username))
         throw Error("cannot delete");
       await deleteArticleWithRelations(slug);

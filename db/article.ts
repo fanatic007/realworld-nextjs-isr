@@ -55,6 +55,17 @@ export const getArticlesWithRelations = async (where:Prisma.ArticleWhereInput, u
   return articlesResult as SingleArticle[];
 }
 
+export const updateArticle = async (query:Partial<Article>,data:Partial<Article>) => {
+  if(data.title){
+    data['slug'] = getSlug(data.title);
+  }
+  const updatedArticle = await prisma.article.update({
+    where:query,
+    data: data
+  });
+  return updatedArticle;
+}
+
 export const getTagsByIDs = async (tagIDs:string[]) => {
   if(tagIDs.length==0)
     return [];

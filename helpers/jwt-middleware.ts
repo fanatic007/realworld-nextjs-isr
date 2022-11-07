@@ -14,7 +14,7 @@ function jwtMiddleware(req:NextApiRequest, res:NextApiResponse<any>) {
             /^\/api\/users\/login/,
             /^\/api\/tags/,
             /^\/api\/articles/,
-            /^\/api\/profiles/
+            /^\/api\/profiles\/([a-z0-9-_]+)$/
         ]
     });
     return util.promisify(middleware)(req, res);

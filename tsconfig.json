@@ -16,6 +16,7 @@
     "incremental": true,
     "sourceMap": true,
     "outDir": "dist",
+    "types":["jest","node","@testing-library/jest-dom"],
     "typeRoots": [
       "./types/"
     ]

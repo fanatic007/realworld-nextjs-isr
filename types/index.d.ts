@@ -1,6 +1,6 @@
 import { Prisma, Tags, User, Article, Comment } from '@prisma/client';
 import { articleWithComments, LOGIN_REQUEST, PROFILE_PAYLOAD, TAGS_RESPONSE, USER_REQUEST, USER_PAYLOAD, ARTICLE_REQUEST, ARTICLE_RESPONSE } from '../constants';
-
+import * as jest from '@types/jest';
 
 type NonEmptyArray<T> = [T, ...T[]];
 type Errors = { body:NonEmptyArray<Error>}

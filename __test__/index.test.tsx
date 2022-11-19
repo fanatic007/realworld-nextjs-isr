@@ -1,13 +1,11 @@
 import { render, screen } from '@testing-library/react'
-import Home from '../pages/index'
+import Footer from '../components/layout/footer'
 
-describe('Home', () => {
-  it('renders a heading', () => {
-    const { container } = render(<Home />)
+describe('Footer', () => {
+  it('renders a heading', async () => {
+    const { container } = render(<Footer />)
 
-    const heading = screen.getByRole('heading', {
-      name: /welcome to next\.js!/i,
-    })
+    const heading = await screen.findByText('conduit')
 
     expect(heading).toBeInTheDocument()
 

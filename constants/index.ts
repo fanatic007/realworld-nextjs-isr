@@ -2,6 +2,8 @@ import { User } from "../types/";
 import { Prisma } from '@prisma/client';
 
 export const EXPIRY_TIME = '600s';
+export const PAGE_SIZE = 10;
+export const PAGES = Array.from(Array(10).keys()).map((number:number)=>number+1);
 
 export const USER_DEFAULT: Partial<User> = {
   image:'',

@@ -35,6 +35,9 @@ export const getArticlesWithRelations = async (where:Prisma.ArticleWhereInput, u
   let articlesResult = await prisma.article.findMany({
       where,
       select: ARTICLE_RESPONSE_FIELDS,
+      orderBy: {
+        createdAt: 'desc',
+      },
       skip,
       take
     }

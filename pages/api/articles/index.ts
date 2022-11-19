@@ -24,7 +24,7 @@ async function handler (
       const queryParams:QueryParams = req.query;
       let query = getArticleQuery(queryParams);   
       const {userID} = token?getJWTPayload(token):{userID:undefined};
-      const articles = await getArticlesWithRelations(query, userID, queryParams.offset, queryParams.limit);
+      const articles = await getArticlesWithRelations(query, userID, queryParams.offset? Number(queryParams.offset): 0, queryParams.limit? Number(queryParams.limit):100);
       return res.status(200).json({articles: articles, articlesCount:articles.length});
     }
     default: {

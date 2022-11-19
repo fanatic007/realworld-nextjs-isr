@@ -1,0 +1,14 @@
+
+// Select the database to use.
+use('conduit');
+
+// The drop() command destroys all data from a collection.
+// Make sure you run it against the correct database and collection.
+db.User.udpateOne({
+  where: {
+    username:'sarang7'
+  },
+  data: {
+    image:'https://i.pravatar.cc/300'
+  }
+});

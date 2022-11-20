@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server"
 import stringify from 'fast-json-stable-stringify'
+import { PATH_HOME } from "./constants";
 
 export function encodeOptions(options:any) {
   const json = stringify(options)
@@ -11,7 +12,7 @@ export function decodeOptions(path:any) {
 }
 
 export function middleware(request:NextRequest){
-  if (request.nextUrl.pathname === '/home') {
+  if (request.nextUrl.pathname === PATH_HOME) {
     const searchParams = request.nextUrl.searchParams;
     const path = encodeOptions({
       tag: searchParams.get('tag'),
@@ -24,5 +25,5 @@ export function middleware(request:NextRequest){
 }
 
 export const config = {
-  matcher: ['/home']
+  matcher: [PATH_HOME]
 }

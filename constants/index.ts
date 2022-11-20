@@ -4,6 +4,13 @@ import { Prisma } from '@prisma/client';
 export const EXPIRY_TIME = '600s';
 export const PAGE_SIZE = 10;
 export const PAGES = Array.from(Array(10).keys()).map((number:number)=>number+1);
+export const REVALIDATE_TIME_HOME = 30;
+export const PATH_HOME = '/home';
+
+export const URL_BASE = 'http://localhost:3000';
+export const API_SUFFIX_TAGS = '/api/tags';
+export const API_SUFFIX_ARTICLES = '/api/articles';
+export const API_SUFFIX_PROFILE = '/api/profile';
 
 export const USER_DEFAULT: Partial<User> = {
   image:'',

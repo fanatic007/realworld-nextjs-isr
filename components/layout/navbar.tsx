@@ -1,16 +1,17 @@
 import Link from "next/link"
 import React from "react"
+import { PATH_HOME } from "../../constants"
 
 const Navbar = (props:any) => {
   return (
     <nav className="navbar navbar-light">
         <div className="container">
-            <Link href="/home">
+            <Link href={PATH_HOME}>
                 <a className="navbar-brand">conduit</a>
             </Link>
             <ul className="nav navbar-nav pull-xs-right">
                 <li className="nav-item">
-                    <a className="nav-link active" href="/home">Home</a>
+                    <a className="nav-link active" href={PATH_HOME}>Home</a>
                 </li>
         {   
             props.isLoggedIn &&

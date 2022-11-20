@@ -1,10 +1,11 @@
 import Link from "next/link"
+import { PATH_HOME } from "../../constants"
 
 const Footer = () => {
   return (
     <footer>
         <div className="container">
-            <Link href="/home">
+            <Link href={PATH_HOME}>
               <a  className="logo-font">conduit</a>
             </Link>
             <span className="attribution">

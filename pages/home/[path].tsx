@@ -5,7 +5,7 @@ import ArticlePreview from '../../components/article/ArticlePreview'
 import Pagination from '../../components/article/Pagination'
 import PopularTags from '../../components/article/PopularTags'
 import Layout from '../../components/layout/Layout'
-import { PAGES, PAGE_SIZE } from '../../constants'
+import { API_SUFFIX_ARTICLES, API_SUFFIX_TAGS, PAGES, PAGE_SIZE, REVALIDATE_TIME_HOME, URL_BASE } from '../../constants'
 import { decodeOptions, encodeOptions } from '../../middleware'
 import { SingleArticle } from '../../types'
 
@@ -44,9 +44,12 @@ const Home: NextPage = (props:any) => {
                       <a className={`nav-link active`} href="">#{tag}</a>
                   </li>
                 }
-              </ul>
-              {props.articles.map((article:SingleArticle)=> <ArticlePreview key={article.slug} article={article}></ArticlePreview> )}</div>
-              <Pagination></Pagination>
+                </ul>
+              </div>
+              <div>
+                {props.articles.map((article:SingleArticle)=> <ArticlePreview key={`${article.slug}${Math.random()}`} article={article}></ArticlePreview> )}                  
+                <Pagination></Pagination>
+              </div>
             </div>
             <PopularTags tags={props.tags}></PopularTags>
           </div>
@@ -64,14 +67,14 @@ export const getPath = (params:any) => {
 
 export async function getStaticProps(context:any) {
   let {tag, page} = decodeOptions(context.params.path);
-  const articles = (await (await fetch(`http://localhost:3000/api/articles?limit=${PAGE_SIZE}&offset=${(+page - 1)*PAGE_SIZE}${tag?'&tag='+tag:''}`)).json())['articles'];
-  const tags = (await (await fetch('http://localhost:3000/api/tags')).json())['tags'];
+  const articles = (await (await fetch(`${URL_BASE}${API_SUFFIX_ARTICLES}?limit=${PAGE_SIZE}&offset=${(+page - 1)*PAGE_SIZE}${tag?'&tag='+tag:''}`)).json())['articles'];
+  const tags = (await (await fetch(`${URL_BASE}${API_SUFFIX_TAGS}`)).json())['tags'];
   return {
     props: {
       articles,
       tags
     },
-    revalidate:60
+    revalidate:REVALIDATE_TIME_HOME
   }
 }
 export async function getStaticPaths() {

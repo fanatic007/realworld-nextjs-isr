@@ -1,7 +1,8 @@
 import type { NextPage } from 'next'
 import Layout from '../../components/layout/Layout'
 import Home from '../../components/pages/home'
-import { API_SUFFIX_TAGS, PAGES, PAGE_SIZE, REVALIDATE_TIME_HOME, URL_BASE } from '../../constants'
+import { PAGES, PAGE_SIZE, REVALIDATE_TIME_HOME } from '../../constants'
+import { getTags } from '../../db/tags'
 import { decodeOptions, encodeOptions } from '../../middleware'
 import { getArticlesByQuery } from '../api/articles'
 
@@ -27,11 +28,11 @@ const HomePage: NextPage = ({articles:multipleArticles, tags}:any) => {
 
 export async function getStaticProps(context:any) {
   const {tag, page} = decodeOptions(context.params.path);
-  // const articles = (await (await fetch(`${URL_BASE}${API_SUFFIX_ARTICLES}?limit=${PAGE_SIZE}&offset=${(+page - 1)*PAGE_SIZE}${tag?'&tag='+tag:''}`)).json())['articles'];
   const query = {tag:tag,limit:PAGE_SIZE,offset:(+page - 1)*PAGE_SIZE};
   const articlesRaw = (await getArticlesByQuery(query)) as any;
   const articles =  JSON.parse(JSON.stringify(articlesRaw));
-  const tags = (await (await fetch(`${URL_BASE}${API_SUFFIX_TAGS}`)).json())['tags'];
+  const tagsRaw = await getTags();
+  const tags = JSON.parse(JSON.stringify(tagsRaw)).map((tag:any)=>tag.title);
   return {
     props: {
       articles,
@@ -41,8 +42,9 @@ export async function getStaticProps(context:any) {
   }
 }
 export async function getStaticPaths() {
-  const {tags} = await (await fetch(`${URL_BASE}${API_SUFFIX_TAGS}`)).json();
-  // Get the paths we want to pre-render based on posts  
+
+  const tags: string[] = (await getTags()).map(tag=>tag.title)
+
   const pagePaths = PAGES.map((page:number) =>
     ({
       params: {

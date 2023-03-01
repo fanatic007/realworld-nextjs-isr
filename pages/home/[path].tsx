@@ -55,9 +55,9 @@ export async function getStaticPaths() {
     })
   );
   let tagPaths:any = [];
-  for(let i = 0; i < tags.length-2; i++)
+  for(let i = 0; i < tags.length; i++)
   {
-    for(let j = 0; j < PAGES.length-9; j++)
+    for(let j = 0; j < PAGES.length; j++)
     {
       tagPaths.push(
         {

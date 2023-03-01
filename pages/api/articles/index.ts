@@ -4,7 +4,7 @@ import type { NextApiRequest, NextApiResponse } from 'next';
 import { createArticle, getArticlesWithRelations } from '../../../db/article';
 import { apiHandler } from '../../../helpers/api-handler';
 import { getJWTPayload } from '../../../helpers/jwt-middleware';
-import { ArticleResponse, ArticlesResponse, QueryParams } from '../../../types/index';
+import { ArticleResponse, ArticlesResponse, QueryParams, SingleArticle } from '../../../types/index';
 
 export default apiHandler(handler);
 
@@ -22,15 +22,20 @@ async function handler (
     }
     case 'GET': {      
       const queryParams:QueryParams = req.query;
-      let query = getArticleQuery(queryParams);   
-      const {userID} = token?getJWTPayload(token):{userID:undefined};
-      const articles = await getArticlesWithRelations(query, userID, queryParams.offset? Number(queryParams.offset): 0, queryParams.limit? Number(queryParams.limit):100);
-      return res.status(200).json({articles: articles, articlesCount:articles.length});
+      const articlesResponse = await getArticlesByQuery(queryParams, token);
+      return res.status(200).json(articlesResponse);
     }
     default: {
       throw new Error("Method Not Allowed")
     }
   }
+}
+
+export const getArticlesByQuery = async (queryParams:any, token?: string) : Promise<ArticlesResponse> => {
+  let query = getArticleQuery(queryParams);
+  const {userID} = token?getJWTPayload(token):{userID:undefined};
+  const articles = await getArticlesWithRelations(query, userID, queryParams.offset? Number(queryParams.offset): 0, queryParams.limit? Number(queryParams.limit):100);
+  return {articles: articles, articlesCount:articles.length};
 }
 
 const getArticleQuery = (queryParams:QueryParams)=> {

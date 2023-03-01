@@ -1,21 +1,17 @@
 import Link from "next/link";
-import { useRouter } from "next/router";
-import React from "react";
-import { PAGES } from "../../constants";
-import { decodeOptions } from "../../middleware";
-import { getPath } from "../../pages/home/[path]";
+import { useMemo } from "react";
+import { PAGE_SIZE } from "../../constants";
 
 
-const Pagination = () => {
-  const router = useRouter();
-  const { tag, page:currentPage=1 } = decodeOptions(router.query.path);
+const Pagination = ({path,itemsCount,tag,page:currentPage}:any) => {
+  const pages = useMemo(()=>Array.from(Array(Math.ceil(itemsCount/PAGE_SIZE)).keys()).map((number:number)=>number+1),[itemsCount]);
   return(
     <nav>
       <ul className="pagination">
       {
-        PAGES.map((page:number) =>
+        pages.map((page:number) =>
           <li className={`page-item ${page==currentPage?'active':''}`}  key={`page_${page}`}>
-            <Link href={`${getPath({tag, page})}`}>
+            <Link href={`${path}?${(tag?('tag='+tag)+'&':'')}page=${(page)}`}>
               <a className="page-link">{page}</a>
             </Link>
           </li>        

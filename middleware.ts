@@ -14,16 +14,19 @@ export function decodeOptions(path:any) {
 export function middleware(request:NextRequest){
   if (request.nextUrl.pathname === PATH_HOME) {
     const searchParams = request.nextUrl.searchParams;
-    const path = encodeOptions({
+        
+    let options: any = {
       tag: searchParams.get('tag'),
       page: searchParams.get('page') || '1',
-    });
-    const newUrl = new URL(`/home/${path}`, request.nextUrl.origin);
+    };
+    options = Object.fromEntries(Object.entries(options).filter(([_, v]) => v != null));
+    const path = encodeOptions(options);
+    const newUrl = new URL(`${PATH_HOME}/${path}`, request.nextUrl.origin);
     return NextResponse.rewrite(newUrl)
   }
   return NextResponse.next()
 }
 
 export const config = {
-  matcher: [PATH_HOME]
+  matcher: ['/home']
 }

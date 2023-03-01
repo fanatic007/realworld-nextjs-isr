@@ -1,3 +1,4 @@
+import { instanceOf } from "prop-types"
 import { PROFILE_PAYLOAD } from "../constants"
 import { User, ProfilePayload, WithUserFollowing, FollowedByIDs  } from "../types"
 
@@ -15,4 +16,3 @@ export const getFollowing = <ProfilePayload extends FollowedByIDs>(
   delete wuf['followedByIDs'];
   return wuf;
 }
-
